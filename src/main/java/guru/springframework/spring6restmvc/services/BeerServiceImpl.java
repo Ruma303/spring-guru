@@ -7,9 +7,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Created by jt, Spring Framework Guru.
- */
 public class BeerServiceImpl implements BeerService {
     @Override
     public Beer getBeerById(UUID id) {
