@@ -1,13 +1,13 @@
-package guru.springframework.spring6restmvc;
+package guru.springboot.master;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Spring6RestMvcApplication {
+public class SpringBootMasterApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Spring6RestMvcApplication.class, args);
+        SpringApplication.run(SpringBootMasterApplication.class, args);
     }
 
 }
