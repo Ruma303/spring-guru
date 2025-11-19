@@ -19,13 +19,23 @@ public class BeerController {
 
     @GetMapping("/all")
     public List<Beer> getAllBeers() {
+        log.debug("Getting all beers");
         return beerService.getAllBeers();
     }
 
-    //@GetMapping(value = "/{id}")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
+    // @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Beer getBeerById(@PathVariable UUID id) {
-        log.debug("Get Beer by id {}", id);
+        log.debug("Get Beer by id {} 123", id);
         return beerService.getBeerById(id);
     }
+
+    @PostMapping("/create")
+    //@RequestMapping(value = "", method = RequestMethod.POST)
+    public Beer createBeer(@RequestBody Beer beer) {
+        log.debug("Creating a new beer...");
+        Beer savedBeer = beerService.saveBeer(beer);
+        return savedBeer;
+    }
+
 }
