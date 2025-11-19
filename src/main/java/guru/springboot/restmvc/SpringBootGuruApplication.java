@@ -1,13 +1,13 @@
-package guru.springboot.lombok;
+package guru.springboot.restmvc;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringBootMasterApplication {
+public class SpringBootGuruApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringBootMasterApplication.class, args);
+        SpringApplication.run(SpringBootGuruApplication.class, args);
     }
 
 }

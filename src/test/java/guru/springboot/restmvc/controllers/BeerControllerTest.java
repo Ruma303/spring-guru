@@ -1,4 +1,4 @@
-package guru.springboot.lombok.controllers;
+package guru.springboot.restmvc.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

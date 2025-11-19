@@ -1,4 +1,4 @@
-package guru.springboot.lombok.model;
+package guru.springboot.restmvc.model;
 
 import lombok.Builder;
 import lombok.Data;
