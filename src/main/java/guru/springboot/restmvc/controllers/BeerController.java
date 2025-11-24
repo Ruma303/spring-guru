@@ -29,14 +29,12 @@ public class BeerController {
         return beerService.getAllBeers();
     }
 
-    // @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @GetMapping(value = "/{id}")
     public Beer getBeerById(@PathVariable UUID id) {
-        log.debug("Get Beer by id {} 123", id);
+        log.debug("Get Beer by id {}", id);
         return beerService.getBeerById(id);
     }
 
-    //@RequestMapping(value = "", method = RequestMethod.POST)
     @PostMapping("/create")
     public ResponseEntity<Beer> createBeer(@RequestBody Beer beer) {
         log.debug("Creating a new beer...");
