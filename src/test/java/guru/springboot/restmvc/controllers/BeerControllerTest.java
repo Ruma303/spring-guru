@@ -40,6 +40,8 @@ import guru.springboot.restmvc.service.BeerService;
 @ExtendWith(MockitoExtension.class)
 class BeerControllerTest {
 
+    private static final String API_BEER = "/api/beer/";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -87,7 +89,7 @@ class BeerControllerTest {
         given(beerService.getBeerById(any(UUID.class))).willReturn(beer);
 
         // Effettua la richiesta e verifica il response
-        mockMvc.perform(get("/api/beer/" + beer.getId())
+        mockMvc.perform(get(API_BEER + beer.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -109,7 +111,7 @@ class BeerControllerTest {
         given(beerService.getAllBeers()).willReturn(testBeers);
 
         // Il mapping corretto per la lista è "/api/beer/all"
-        mockMvc.perform(get("/api/beer/all")
+        mockMvc.perform(get(API_BEER + "all")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -122,7 +124,7 @@ class BeerControllerTest {
 
         given(beerService.saveBeer(any(Beer.class))).willReturn(beer);
 
-        mockMvc.perform(post("/api/beer/create")
+        mockMvc.perform(post(API_BEER + "create")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(beer)))
@@ -135,7 +137,7 @@ class BeerControllerTest {
     void testUpdateBeerUsingPut() throws Exception {
         Beer beer = beerBuilder();
 
-        mockMvc.perform(put("/api/beer/update/" + beer.getId())
+        mockMvc.perform(put(API_BEER + "update/" + beer.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(beer)));
@@ -153,7 +155,7 @@ class BeerControllerTest {
         given(beerService.updateBeerUsingPatchById(any(UUID.class), any(Beer.class)))
                 .willReturn(Optional.of(beer));
 
-        mockMvc.perform(patch("/api/beer/update/" + beer.getId())
+        mockMvc.perform(patch(API_BEER + "update/" + beer.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(beerMap)))
@@ -168,7 +170,7 @@ class BeerControllerTest {
         Beer beer = beerBuilder();
         given(beerService.deleteBeerById(beer.getId())).willReturn(Optional.of(beer));
 
-        mockMvc.perform(delete("/api/beer/delete/" + beer.getId())
+        mockMvc.perform(delete(API_BEER + "delete/" + beer.getId())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
