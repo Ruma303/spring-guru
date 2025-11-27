@@ -76,7 +76,7 @@ public class BeerController {
         }
     }
 
-    @DeleteMapping("/update/{beerId}")
+    @DeleteMapping("/delete/{beerId}")
     public ResponseEntity<? extends Object> deleteBeerById(@PathVariable("beerId") UUID beerId) {
         log.debug("Deleting beer with id: " + beerId);
 

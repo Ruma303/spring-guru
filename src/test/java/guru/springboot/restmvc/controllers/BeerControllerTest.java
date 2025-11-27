@@ -2,28 +2,42 @@ package guru.springboot.restmvc.controllers;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.hamcrest.CoreMatchers.is;
 
-import java.util.List;
-import java.util.UUID;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.*;
 
 import guru.springboot.restmvc.model.Beer;
 import guru.springboot.restmvc.model.BeerStyle;
 import guru.springboot.restmvc.service.BeerService;
 
 @WebMvcTest(BeerController.class)
+@ExtendWith(MockitoExtension.class)
 class BeerControllerTest {
 
     @Autowired
@@ -32,29 +46,53 @@ class BeerControllerTest {
     @MockitoBean
     private BeerService beerService;
 
-    @Test
-    void getBeerById() throws Exception {
-        // Crea un oggetto Beer di test
-        UUID beerId = UUID.randomUUID();
-        Beer testBeer = Beer.builder()
-                .id(beerId)
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @Captor
+    ArgumentCaptor<UUID> uuidArgumentCaptor;
+
+    @Captor
+    ArgumentCaptor<Beer> beerArgumentCaptor;
+
+    // Metodo di utilità
+    private Beer beerBuilder() {
+        return Beer.builder()
+                .id(UUID.randomUUID())
                 .beerName("Test Beer")
                 .beerStyle(BeerStyle.PALE_ALE)
                 .upc("123456789")
                 .price(new java.math.BigDecimal("5.50"))
                 .quantityOnHand(20)
                 .build();
+    }
+
+    // Serializzazione
+    @Test
+    void testCreateNewBeerWithSerialization() throws JsonProcessingException, Exception {
+        Beer beer = beerBuilder();
+
+    //        ObjectMapper om = new ObjectMapper();
+    //        om.findAndRegisterModules();
+
+        System.out.println(objectMapper.writeValueAsString(beer));
+    }
+
+    // Testare gli endpoint CRUD
+    @Test
+    void getBeerById() throws Exception {
+        Beer beer = beerBuilder();
 
         // Configura il mock per restituire il testBeer indipendentemente dall'id richiesto
-        given(beerService.getBeerById(any(UUID.class))).willReturn(testBeer);
+        given(beerService.getBeerById(any(UUID.class))).willReturn(beer);
 
         // Effettua la richiesta e verifica il response
-        mockMvc.perform(get("/api/beer/" + beerId)
-                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/beer/" + beer.getId())
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(beerId.toString()))
+                .andExpect(jsonPath("$.id").value(beer.getId().toString()))
                 .andExpect(jsonPath("$.beerName").value("Test Beer"))
                 .andExpect(jsonPath("$.beerStyle").value("PALE_ALE"))
                 .andExpect(jsonPath("$.upc").value("123456789"))
@@ -72,9 +110,69 @@ class BeerControllerTest {
 
         // Il mapping corretto per la lista è "/api/beer/all"
         mockMvc.perform(get("/api/beer/all")
-                 .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", is(3)));
+    }
+
+    @Test
+    void testCreateNewBeer() throws Exception {
+        Beer beer = beerBuilder();
+
+        given(beerService.saveBeer(any(Beer.class))).willReturn(beer);
+
+        mockMvc.perform(post("/api/beer/create")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beer)))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"))
+                .andExpect(jsonPath("$.beerName").value("Test Beer"));
+    }
+
+    @Test
+    void testUpdateBeerUsingPut() throws Exception {
+        Beer beer = beerBuilder();
+
+        mockMvc.perform(put("/api/beer/update/" + beer.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beer)));
+
+        verify(beerService).updateBeerUsingPutById(any(UUID.class), any(Beer.class));
+    }
+
+    @Test
+    void testUpdateBeerUsingPatch() throws Exception {
+        Beer beer = beerBuilder();
+
+        Map<String, Object> beerMap = new HashMap<>();
+        beerMap.put("beerName", "Test name");
+
+        given(beerService.updateBeerUsingPatchById(any(UUID.class), any(Beer.class)))
+                .willReturn(Optional.of(beer));
+
+        mockMvc.perform(patch("/api/beer/update/" + beer.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beerMap)))
+                        .andExpect(status().isOk());
+
+        verify(beerService).updateBeerUsingPatchById(uuidArgumentCaptor.capture(), beerArgumentCaptor.capture());
+        assertThat(beerMap.get("beerName")).isEqualTo(beerArgumentCaptor.getValue().getBeerName());
+    }
+
+    @Test
+    void testDeleteBeer() throws Exception {
+        Beer beer = beerBuilder();
+        given(beerService.deleteBeerById(beer.getId())).willReturn(Optional.of(beer));
+
+        mockMvc.perform(delete("/api/beer/delete/" + beer.getId())
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        verify(beerService).deleteBeerById(uuidArgumentCaptor.capture());
+        assertThat(beer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
 }
