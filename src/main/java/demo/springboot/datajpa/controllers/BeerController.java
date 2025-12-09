@@ -1,8 +1,8 @@
-package guru.springboot.restmvc.controllers;
+package demo.springboot.datajpa.controllers;
 
-import guru.springboot.restmvc.exceptions.NotFoundException;
-import guru.springboot.restmvc.model.Beer;
-import guru.springboot.restmvc.service.BeerService;
+import demo.springboot.datajpa.exceptions.NotFoundException;
+import demo.springboot.datajpa.model.Beer;
+import demo.springboot.datajpa.service.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -90,10 +90,4 @@ public class BeerController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-//    @ExceptionHandler(NotFoundException.class)
-//    public ResponseEntity handleNotFoundException() {
-//        log.error("NotFoundExceptionHandler instantiated.");
-//        return ResponseEntity.notFound().build();
-//    }
 }

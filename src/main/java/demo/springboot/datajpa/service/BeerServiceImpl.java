@@ -1,7 +1,7 @@
-package guru.springboot.restmvc.service;
+package demo.springboot.datajpa.service;
 
-import guru.springboot.restmvc.model.Beer;
-import guru.springboot.restmvc.model.BeerStyle;
+import demo.springboot.datajpa.model.Beer;
+import demo.springboot.datajpa.model.BeerStyle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

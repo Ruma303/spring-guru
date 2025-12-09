@@ -1,10 +1,10 @@
-package guru.springboot.restmvc;
+package demo.springboot.datajpa;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringBootMasterApplicationTests {
+class SpringBootDataApplicationTests {
 
     @Test
     void contextLoads() {

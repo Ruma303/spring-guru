@@ -1,6 +1,6 @@
-package guru.springboot.restmvc.service;
+package demo.springboot.datajpa.service;
 
-import guru.springboot.restmvc.model.Beer;
+import demo.springboot.datajpa.model.Beer;
 
 import java.util.List;
 import java.util.Optional;

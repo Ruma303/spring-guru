@@ -1,4 +1,4 @@
-package guru.springboot.restmvc.dto;
+package demo.springboot.datajpa.dto;
 
 import org.springframework.http.HttpStatus;
 

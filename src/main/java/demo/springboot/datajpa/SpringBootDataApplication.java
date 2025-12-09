@@ -1,13 +1,13 @@
-package guru.springboot.restmvc;
+package demo.springboot.datajpa;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringBootGuruApplication {
+public class SpringBootDataApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringBootGuruApplication.class, args);
+        SpringApplication.run(SpringBootDataApplication.class, args);
     }
 
 }
