@@ -1,5 +1,6 @@
 package guru.springboot.restmvc.controllers;
 
+import guru.springboot.restmvc.exceptions.NotFoundException;
 import guru.springboot.restmvc.model.Beer;
 import guru.springboot.restmvc.service.BeerService;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,8 @@ public class BeerController {
     @GetMapping(value = "/{id}")
     public Beer getBeerById(@PathVariable UUID id) {
         log.debug("Get Beer by id {}", id);
-        return beerService.getBeerById(id);
+        return beerService.getBeerById(id)
+                .orElseThrow(() -> new NotFoundException("Beer with id " + id + " not found"));
     }
 
     @PostMapping("/create")
@@ -88,4 +90,10 @@ public class BeerController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+//    @ExceptionHandler(NotFoundException.class)
+//    public ResponseEntity handleNotFoundException() {
+//        log.error("NotFoundExceptionHandler instantiated.");
+//        return ResponseEntity.notFound().build();
+//    }
 }

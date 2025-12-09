@@ -86,7 +86,7 @@ class BeerControllerTest {
         Beer beer = beerBuilder();
 
         // Configura il mock per restituire il testBeer indipendentemente dall'id richiesto
-        given(beerService.getBeerById(any(UUID.class))).willReturn(beer);
+        given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.ofNullable(beer));
 
         // Effettua la richiesta e verifica il response
         mockMvc.perform(get(API_BEER + beer.getId())
